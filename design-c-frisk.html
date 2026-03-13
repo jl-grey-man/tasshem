@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design C — Naturlig & Luftig — Tasshem</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:#F4FAF6; color:#1B3A28; font-size:14px; line-height:1.5; }
+
+/* Page switcher */
+.pw { position:fixed; top:0; left:0; right:0; z-index:999; background:#1B3A28; display:flex; justify-content:center; gap:2px; padding:5px; }
+.pw button { background:transparent; color:#5A8A70; border:none; padding:6px 16px; border-radius:20px; cursor:pointer; font:600 11px/1 'DM Sans',sans-serif; transition:.15s; }
+.pw button.on { background:#FF6B45; color:#fff; }
+.pw button:hover:not(.on) { color:#A0C8B0; }
+.pg { display:none; padding-top:36px; }
+.pg.on { display:block; }
+
+/* Modal */
+.overlay { display:none; position:fixed; inset:0; background:rgba(27,58,40,.5); z-index:500; align-items:center; justify-content:center; }
+.overlay.visible { display:flex; }
+.modal { background:#fff; border-radius:24px; max-width:560px; width:90%; max-height:80vh; overflow-y:auto; box-shadow:0 32px 80px rgba(27,58,40,.2); }
+.modal-header { padding:22px 26px 16px; border-bottom:2px solid #E8F5EE; display:flex; align-items:center; justify-content:space-between; }
+.modal-header h2 { font-family:'DM Serif Display',serif; font-size:18px; color:#1B3A28; }
+.modal-close { width:30px; height:30px; border:2px solid #D0E8D8; border-radius:50%; background:#fff; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; color:#8AB898; }
+.modal-close:hover { border-color:#FF6B45; color:#FF6B45; }
+.modal-body { padding:20px 26px 24px; }
+.modal-body p { font-size:13px; color:#5A7A68; line-height:1.7; margin-bottom:12px; }
+.modal-img.ph { height:160px; margin-bottom:16px; }
+.modal-footer { padding:16px 26px; border-top:2px solid #E8F5EE; display:flex; justify-content:flex-end; gap:8px; }
+
+/* Image placeholders */
+.ph {
+  background:linear-gradient(135deg,#C8E8D4 0%,#B4D8C4 100%);
+  display:flex; align-items:center; justify-content:center;
+  color:#7AAE8A; font-size:11px; font-weight:600; text-align:center;
+  border-radius:20px; overflow:hidden; position:relative;
+}
+.ph::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.2) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+/* Nav */
+.nav { background:#fff; border-bottom:2px solid #E8F5EE; height:62px; padding:0 40px; display:flex; align-items:center; gap:32px; position:sticky; top:36px; z-index:100; }
+.logo { font-family:'DM Serif Display',serif; font-size:22px; color:#1B3A28; cursor:pointer; }
+.logo-dot { color:#FF6B45; }
+.search-box { flex:1; max-width:400px; height:40px; background:#F0F8F4; border:2px solid #D0E8D8; border-radius:40px; padding:0 18px; font-size:13px; display:flex; align-items:center; gap:8px; transition:.2s; }
+.search-box:focus-within { border-color:#2E7D52; }
+.search-box input { flex:1; border:none; background:none; outline:none; font:400 13px/1 'DM Sans',sans-serif; color:#1B3A28; }
+.search-box input::placeholder { color:#8AB898; }
+.nav-right { margin-left:auto; display:flex; align-items:center; gap:20px; }
+.nav-link { font-size:13px; color:#5A8A70; font-weight:600; cursor:pointer; text-decoration:none; transition:.15s; }
+.nav-link:hover { color:#2E7D52; }
+
+/* Back bar */
+.back-bar { background:#fff; border-bottom:2px solid #E8F5EE; padding:0 40px; display:flex; align-items:center; height:46px; }
+.back-btn { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#5A8A70; background:none; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; padding:0; transition:.15s; }
+.back-btn:hover { color:#2E7D52; }
+
+/* Content */
+.content { max-width:1100px; margin:0 auto; padding:32px 40px 64px; }
+
+/* Stats */
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:36px; }
+.stat { background:#fff; border-radius:24px; padding:28px; text-align:center; border:2px solid #E8F5EE; }
+.stat-val { font-family:'DM Serif Display',serif; font-size:36px; color:#2E7D52; margin-bottom:6px; }
+.stat-label { font-size:12px; color:#6B9A7A; font-weight:600; }
+
+/* Section header */
+.sh { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#8AB898; margin:0 0 18px; display:flex; align-items:center; justify-content:space-between; }
+.sh a { font-size:12px; font-weight:700; color:#FF6B45; text-decoration:none; letter-spacing:0; text-transform:none; }
+.sh a:hover { text-decoration:underline; }
+
+/* Grid */
+.grid { display:grid; gap:16px; margin-bottom:32px; }
+.g3 { grid-template-columns:repeat(3,1fr); }
+.g4 { grid-template-columns:repeat(4,1fr); }
+
+/* Dog card */
+.dog-card { background:#fff; border:2px solid #E8F5EE; border-radius:24px; overflow:hidden; cursor:pointer; transition:.25s; }
+.dog-card:hover { border-color:#2E7D52; box-shadow:0 8px 32px rgba(46,125,82,.1); transform:translateY(-2px); }
+.dog-img.ph { height:180px; border-radius:0; }
+.dog-body { padding:16px 18px 18px; }
+.dog-badges { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+.badge { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.badge-country { background:#E8F5EE; color:#5A8A70; }
+.badge-status-ok { background:#D4F0E2; color:#1B7A4A; }
+.badge-status-pending { background:#FFF0E8; color:#E05A28; }
+.dog-name { font-family:'DM Serif Display',serif; font-size:18px; margin-bottom:2px; color:#1B3A28; }
+.dog-breed { font-size:12px; color:#8AB898; font-weight:500; margin-bottom:12px; }
+.dog-meta { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; margin-bottom:14px; }
+.dog-meta-item { font-size:11px; color:#8AB898; font-weight:500; }
+.dog-meta-item span { color:#1B3A28; font-weight:700; }
+.dog-org { display:flex; align-items:center; gap:8px; border-top:2px solid #F0FAF4; padding-top:12px; }
+.org-thumb.ph { width:26px; height:26px; border-radius:10px; font-size:7px; flex-shrink:0; }
+.org-name { font-size:11px; color:#8AB898; font-weight:500; flex:1; }
+.dog-org-stars { font-size:11px; color:#FF9B28; }
+
+/* Buttons */
+.btn { display:inline-block; background:#FF6B45; color:#fff; padding:11px 26px; border-radius:40px; font-size:13px; font-weight:700; cursor:pointer; border:none; font-family:'DM Sans',sans-serif; width:fit-content; transition:.15s; }
+.btn:hover { background:#E55530; }
+.btn-ghost { display:inline-block; background:#fff; color:#2E7D52; padding:11px 26px; border-radius:40px; font-size:13px; font-weight:700; cursor:pointer; border:2px solid #D0E8D8; font-family:'DM Sans',sans-serif; width:fit-content; transition:.15s; }
+.btn-ghost:hover { border-color:#2E7D52; background:#F0FAF4; }
+.btn-sm { padding:7px 18px; font-size:12px; }
+
+/* Breadcrumbs */
+.breadcrumbs { font-size:12px; color:#8AB898; margin-bottom:24px; font-weight:500; }
+.breadcrumbs a { color:#8AB898; text-decoration:none; cursor:pointer; }
+.breadcrumbs a:hover { color:#2E7D52; }
+.breadcrumbs span { color:#C8E8D4; margin:0 6px; }
+.breadcrumbs strong { color:#1B3A28; font-weight:600; }
+
+/* Detail */
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:36px; }
+.detail-imgs { display:flex; flex-direction:column; gap:12px; }
+.detail-main-img.ph { height:340px; border-radius:24px; }
+.detail-thumbs { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.detail-thumb.ph { height:72px; border-radius:14px; font-size:8px; cursor:pointer; }
+.detail-info { display:flex; flex-direction:column; gap:20px; }
+.detail-badges { display:flex; gap:6px; flex-wrap:wrap; }
+.detail-name { font-family:'DM Serif Display',serif; font-size:34px; line-height:1.1; color:#1B3A28; }
+.detail-breed { font-size:14px; color:#8AB898; font-weight:500; margin-top:4px; }
+.detail-attrs { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.attr-item { background:#F0FAF4; border-radius:16px; padding:12px 14px; border:2px solid #E0F0E8; }
+.attr-label { font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; color:#8AB898; margin-bottom:4px; }
+.attr-val { font-size:13px; font-weight:700; color:#1B3A28; }
+.detail-desc { font-size:13px; color:#5A7A68; line-height:1.8; }
+.traits { display:flex; flex-wrap:wrap; gap:8px; }
+.trait { background:#E8F5EE; border:2px solid #D0E8D8; padding:5px 14px; border-radius:20px; font-size:11px; color:#3A6A50; font-weight:600; }
+.detail-cta { display:flex; gap:10px; }
+
+/* Org section */
+.org-section { background:#fff; border:2px solid #E8F5EE; border-radius:24px; padding:28px; margin-bottom:20px; }
+.org-header { display:flex; align-items:flex-start; gap:18px; margin-bottom:22px; padding-bottom:22px; border-bottom:2px solid #F0FAF4; }
+.org-logo.ph { width:68px; height:68px; border-radius:18px; font-size:9px; flex-shrink:0; }
+.org-meta { flex:1; }
+.org-title { font-family:'DM Serif Display',serif; font-size:18px; margin-bottom:4px; color:#1B3A28; }
+.org-subtitle { font-size:12px; color:#8AB898; font-weight:500; margin-bottom:10px; }
+.org-stats-row { display:flex; gap:20px; }
+.org-stat { text-align:center; }
+.org-stat .v { font-size:16px; font-weight:700; color:#1B3A28; }
+.org-stat .l { font-size:10px; color:#8AB898; }
+.org-rating-big { margin-left:auto; text-align:center; }
+.rating-num { font-family:'DM Serif Display',serif; font-size:42px; color:#2E7D52; }
+.rating-stars { font-size:20px; color:#FF9B28; margin-bottom:3px; }
+.rating-count { font-size:11px; color:#8AB898; font-weight:500; }
+.org-desc { font-size:13px; color:#5A7A68; line-height:1.8; margin-bottom:22px; }
+.org-dogs-row { display:flex; gap:12px; overflow-x:auto; padding-bottom:4px; }
+.org-dogs-row::-webkit-scrollbar { display:none; }
+.org-mini-card { flex-shrink:0; width:126px; cursor:pointer; }
+.org-mini-img.ph { height:84px; border-radius:14px; font-size:8px; margin-bottom:8px; }
+.org-mini-name { font-size:11px; font-weight:700; color:#1B3A28; }
+.org-mini-breed { font-size:10px; color:#8AB898; font-weight:500; }
+
+/* Reviews */
+.reviews-section { background:#fff; border:2px solid #E8F5EE; border-radius:24px; padding:28px; }
+.review-summary { display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:center; margin-bottom:24px; padding-bottom:24px; border-bottom:2px solid #F0FAF4; }
+.review-big-num { font-family:'DM Serif Display',serif; font-size:58px; text-align:center; color:#2E7D52; }
+.review-big-stars { font-size:22px; color:#FF9B28; margin-bottom:4px; }
+.review-big-count { font-size:12px; color:#8AB898; font-weight:500; }
+.bar-rows { display:flex; flex-direction:column; gap:7px; }
+.bar-row { display:flex; align-items:center; gap:10px; font-size:11px; color:#8AB898; }
+.bar-row .stars { width:16px; text-align:right; font-weight:700; color:#1B3A28; }
+.bar-track { flex:1; height:8px; background:#E8F5EE; border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; background:#2E7D52; border-radius:4px; }
+.bar-count { width:24px; text-align:right; font-weight:600; }
+.review-item { padding:18px 0; border-bottom:2px solid #F4FAF6; }
+.review-item:last-child { border-bottom:none; }
+.review-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.review-av.ph { width:38px; height:38px; border-radius:50%; font-size:8px; flex-shrink:0; }
+.review-author { flex:1; }
+.review-name { font-size:13px; font-weight:700; color:#1B3A28; }
+.review-date { font-size:11px; color:#8AB898; font-weight:500; }
+.review-stars { font-size:13px; color:#FF9B28; }
+.review-text { font-size:13px; color:#5A7A68; line-height:1.65; }
+
+/* Footer */
+.ft { max-width:1100px; margin:0 auto; padding:28px 40px; }
+.ft-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; margin-bottom:20px; }
+.ft-col h4 { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:#8AB898; margin-bottom:10px; }
+.ft-col a { display:block; font-size:12px; color:#6B9A7A; text-decoration:none; margin-bottom:5px; cursor:pointer; font-weight:500; transition:.15s; }
+.ft-col a:hover { color:#2E7D52; }
+.ft-bottom { font-size:11px; color:#8AB898; font-weight:500; }
+
+/* Fund card */
+.fund-card { background:#fff; border:2px solid #E8F5EE; border-radius:24px; overflow:hidden; cursor:pointer; transition:.25s; }
+.fund-card:hover { border-color:#2E7D52; box-shadow:0 8px 32px rgba(46,125,82,.1); transform:translateY(-2px); }
+
+/* Filter buttons */
+.filter-btn { height:34px; padding:0 16px; border-radius:40px; border:2px solid #D0E8D8; background:#F0FAF4; font:600 12px/1 'DM Sans',sans-serif; color:#5A8A70; cursor:pointer; white-space:nowrap; transition:.15s; }
+.filter-btn:hover, .filter-btn.on { border-color:#FF6B45; color:#FF6B45; background:#FFF4F1; }
+
+/* Load more */
+.load-more-row { text-align:center; padding:24px 0 0; }
+
+@media(max-width:900px) {
+  .g4,.g3 { grid-template-columns:1fr 1fr; }
+  .detail-grid { grid-template-columns:1fr; }
+  .stats { grid-template-columns:1fr; }
+  .ft-cols { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Page switcher -->
+<div class="pw">
+  <button class="on" onclick="go('listing',this)">Hitta hund</button>
+  <button onclick="go('detail',this)">Hundprofil</button>
+  <button onclick="go('funding',this)">Insamlingar</button>
+  <button onclick="go('campaign',this)">Insamlingssida</button>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header"><h2 id="modal-title">Titel</h2><button class="modal-close" onclick="closeModal()">×</button></div>
+    <div class="modal-body"><div class="modal-img ph" id="modal-img">Bild</div><p id="modal-text">Beskrivning.</p></div>
+    <div class="modal-footer"><button class="btn-ghost btn-sm" onclick="closeModal()">Stäng</button><button class="btn btn-sm" onclick="go('detail',document.querySelectorAll('.pw button')[1]);closeModal()">Visa hundprofil</button></div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 1: LISTING ===================== -->
+<div id="p-listing" class="pg on">
+
+  <div class="nav">
+    <div class="logo" onclick="go('listing')">Tasshem<span class="logo-dot">.</span></div>
+    <div class="search-box">
+      <span style="color:#8AB898;font-size:15px;">⌕</span>
+      <input type="text" placeholder="Sök ras, namn, land...">
+    </div>
+    <div class="nav-right">
+      <a class="nav-link" href="#">Om oss</a>
+      <a class="nav-link" href="#">Organisationer</a>
+      <a class="nav-link" href="#">Bli volontär</a>
+      <button class="btn btn-sm" style="margin-left:4px;">Logga in</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val">347</div><div class="stat-label">Hundar söker hem</div></div>
+      <div class="stat"><div class="stat-val">1 284</div><div class="stat-label">Adopterade via oss</div></div>
+      <div class="stat"><div class="stat-val">38</div><div class="stat-label">Samarbetsorganisationer</div></div>
+    </div>
+
+    <div style="margin-bottom:40px;">
+      <div class="sh">Insamlingar just nu <a onclick="go('funding',null)" style="cursor:pointer;">Visa alla →</a></div>
+      <div class="grid g3">
+        <div class="fund-card" onclick="go('campaign',null)">
+          <div class="ph" style="height:160px;border-radius:0;">Hundporträtt</div>
+          <div style="padding:16px 18px 18px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Veterinärvård</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:4px;color:#1B3A28;">Hundnamn</div>
+            <div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Kort beskrivning av vad insamlingen gäller och vad pengarna går till.</div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;font-size:13px;">3 240 kr</strong> insamlade</span><span>av 5 000 kr</span></div>
+              <div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:65%;background:#2E7D52;border-radius:4px;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;font-weight:500;"><span>47 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">12 dagar kvar</span></div>
+          </div>
+        </div>
+        <div class="fund-card" onclick="go('campaign',null)">
+          <div class="ph" style="height:160px;border-radius:0;">Hundporträtt</div>
+          <div style="padding:16px 18px 18px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Transport</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:4px;color:#1B3A28;">Hundnamn</div>
+            <div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Kort beskrivning av vad insamlingen gäller och vad pengarna går till.</div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;font-size:13px;">1 800 kr</strong> insamlade</span><span>av 3 000 kr</span></div>
+              <div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:60%;background:#2E7D52;border-radius:4px;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;font-weight:500;"><span>29 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">5 dagar kvar</span></div>
+          </div>
+        </div>
+        <div class="fund-card" onclick="go('campaign',null)">
+          <div class="ph" style="height:160px;border-radius:0;">Hundporträtt</div>
+          <div style="padding:16px 18px 18px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Rehabilitering</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:4px;color:#1B3A28;">Hundnamn</div>
+            <div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Kort beskrivning av vad insamlingen gäller och vad pengarna går till.</div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;font-size:13px;">7 600 kr</strong> insamlade</span><span>av 8 000 kr</span></div>
+              <div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:95%;background:#2E7D52;border-radius:4px;"></div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;font-weight:500;"><span>103 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">2 dagar kvar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">Tillgängliga hundar <a href="#">Sortera: Senast inlagd ▾</a></div>
+
+    <div class="grid g4">
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Rumänien</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 2 år, Hona</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Medel</span></div><div class="dog-meta-item">Vikt: <span>14 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★☆</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Spanien</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 4 år, Hane</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Stor</span></div><div class="dog-meta-item">Vikt: <span>28 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★★</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Bosnien</span><span class="badge badge-status-pending">Reserverad</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 1 år, Hona</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Liten</span></div><div class="dog-meta-item">Vikt: <span>7 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Nej</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★☆</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Serbien</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 6 år, Hane</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Medel</span></div><div class="dog-meta-item">Vikt: <span>19 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★★</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Turkiet</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 3 år, Hona</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Stor</span></div><div class="dog-meta-item">Vikt: <span>32 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★☆</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Rumänien</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 5 år, Hane</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Medel</span></div><div class="dog-meta-item">Vikt: <span>22 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★★</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Spanien</span><span class="badge badge-status-pending">Reserverad</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 8 mån, Hona</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Liten</span></div><div class="dog-meta-item">Vikt: <span>4 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Nej</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★☆☆</div></div></div>
+      </div>
+      <div class="dog-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])">
+        <div class="dog-img ph">320×180</div>
+        <div class="dog-body"><div class="dog-badges"><span class="badge badge-country">Bosnien</span><span class="badge badge-status-ok">Ledig</span></div><div class="dog-name">Hundnamn</div><div class="dog-breed">Ras / Blandras, 7 år, Hane</div><div class="dog-meta"><div class="dog-meta-item">Storlek: <span>Medel</span></div><div class="dog-meta-item">Vikt: <span>16 kg</span></div><div class="dog-meta-item">Kastrerad: <span>Ja</span></div><div class="dog-meta-item">Vaccinerad: <span>Ja</span></div></div><div class="dog-org"><div class="org-thumb ph">Org</div><div class="org-name">Organisationsnamn</div><div class="dog-org-stars">★★★★☆</div></div></div>
+      </div>
+    </div>
+
+    <div class="load-more-row"><button class="btn-ghost">Ladda fler hundar</button></div>
+
+  </div>
+
+  <div style="background:#E8F5EE;border-top:2px solid #D0E8D8;margin-top:52px;">
+    <div class="ft">
+      <div class="ft-cols">
+        <div class="ft-col"><h4>Om Tasshem</h4><a href="#">Om oss</a><a href="#">Hur det fungerar</a><a href="#">Kontakt</a><a href="#">Press</a></div>
+        <div class="ft-col"><h4>För adoptanter</h4><a href="#">Hitta hund</a><a href="#">Adoptionsguide</a><a href="#">Vanliga frågor</a><a href="#">Mina favoriter</a></div>
+        <div class="ft-col"><h4>Organisationer</h4><a href="#">Alla organisationer</a><a href="#">Bli samarbetspart</a><a href="#">Registrera hundar</a></div>
+        <div class="ft-col"><h4>Volontärer</h4><a href="#">Bli transportvolontär</a><a href="#">Bli fosterhem</a><a href="#">Bli koordinator</a></div>
+      </div>
+      <div class="ft-bottom">© 2026 Tasshem. Alla rättigheter förbehållna.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== PAGE 2: DOG DETAIL ===================== -->
+<div id="p-detail" class="pg">
+
+  <div class="nav">
+    <div class="logo" onclick="go('listing')">Tasshem<span class="logo-dot">.</span></div>
+    <div class="search-box"><span style="color:#8AB898;font-size:15px;">⌕</span><input type="text" placeholder="Sök ras, namn, land..."></div>
+    <div class="nav-right"><a class="nav-link" href="#">Om oss</a><a class="nav-link" href="#">Organisationer</a><a class="nav-link" href="#">Bli volontär</a><button class="btn btn-sm" style="margin-left:4px;">Logga in</button></div>
+  </div>
+  <div class="back-bar"><button class="back-btn" onclick="go('listing')">← Tillbaka</button></div>
+
+  <div class="content">
+    <div class="breadcrumbs"><a onclick="go('listing',document.querySelectorAll('.pw button')[0])">Hitta hund</a><span>›</span><a onclick="go('listing',document.querySelectorAll('.pw button')[0])">Rumänien</a><span>›</span><strong>Hundnamn</strong></div>
+
+    <div class="detail-grid">
+      <div class="detail-imgs">
+        <div class="detail-main-img ph">Hundporträtt — 600×340</div>
+        <div class="detail-thumbs"><div class="detail-thumb ph">2</div><div class="detail-thumb ph">3</div><div class="detail-thumb ph">4</div><div class="detail-thumb ph">5</div></div>
+        <div style="background:#fff;border:2px solid #E8F5EE;border-radius:24px;padding:22px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#8AB898;margin-bottom:16px;">Kontaktperson i Sverige</div>
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <div class="ph" style="width:54px;height:54px;border-radius:50%;font-size:9px;flex-shrink:0;">Bild</div>
+            <div style="flex:1;">
+              <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:2px;color:#1B3A28;">Förnamn Efternamn</div>
+              <div style="font-size:11px;color:#8AB898;font-weight:500;margin-bottom:12px;">Koordinator · Stockholm</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+                <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:12px;padding:8px 10px;"><div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:2px;">Adoptioner</div><div style="font-size:13px;font-weight:700;color:#1B3A28;">47</div></div>
+                <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:12px;padding:8px 10px;"><div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:2px;">Aktivt sedan</div><div style="font-size:13px;font-weight:700;color:#1B3A28;">2019</div></div>
+                <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:12px;padding:8px 10px;"><div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:2px;">Svarstid</div><div style="font-size:13px;font-weight:700;color:#1B3A28;">Inom 24 h</div></div>
+                <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:12px;padding:8px 10px;"><div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:2px;">Betyg</div><div style="font-size:13px;font-weight:700;color:#1B3A28;">★ 4.9 <span style="font-size:10px;color:#8AB898;font-weight:500;">(31)</span></div></div>
+              </div>
+              <div style="font-size:12px;color:#6B9A7A;line-height:1.65;margin-bottom:14px;font-weight:500;">Kort beskrivning av koordinatorns roll och bakgrund.</div>
+              <div style="display:flex;gap:8px;"><button class="btn btn-sm">Skicka meddelande</button><button class="btn-ghost btn-sm">Visa profil</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-info">
+        <div>
+          <div class="detail-badges"><span class="badge badge-country">Rumänien</span><span class="badge badge-status-ok">Ledig för adoption</span></div>
+          <div class="detail-name">Hundnamn</div>
+          <div class="detail-breed">Ras / Blandras</div>
+        </div>
+        <div class="detail-attrs">
+          <div class="attr-item"><div class="attr-label">Ålder</div><div class="attr-val">2 år</div></div>
+          <div class="attr-item"><div class="attr-label">Kön</div><div class="attr-val">Hona</div></div>
+          <div class="attr-item"><div class="attr-label">Storlek</div><div class="attr-val">Medel</div></div>
+          <div class="attr-item"><div class="attr-label">Vikt</div><div class="attr-val">14 kg</div></div>
+          <div class="attr-item"><div class="attr-label">Kastrerad</div><div class="attr-val">Ja</div></div>
+          <div class="attr-item"><div class="attr-label">Vaccinerad</div><div class="attr-val">Ja, EU-pass</div></div>
+          <div class="attr-item"><div class="attr-label">Chipmärkt</div><div class="attr-val">Ja</div></div>
+          <div class="attr-item"><div class="attr-label">Inlagd</div><div class="attr-val">14 mars 2026</div></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:10px;">Egenskaper</div>
+          <div class="traits"><span class="trait">Bra med barn</span><span class="trait">Bra med hundar</span><span class="trait">Husktränad</span><span class="trait">Lekfull</span><span class="trait">Tryggt temperament</span><span class="trait">Kräver promenader</span></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:10px;">Beskrivning</div>
+          <div class="detail-desc">Beskrivningstext om hunden. Personlighet, bakgrund och vad hunden trivs med. Hur den beter sig med människor och andra djur. Information från foster eller shelter.</div>
+        </div>
+        <div class="detail-cta">
+          <button class="btn" style="flex:1;" onclick="openModal('Anmäl intresse','Fyll i formuläret nedan.','Kontaktformulär — 560×240')">Anmäl intresse</button>
+          <button class="btn-ghost">♡ Spara</button>
+          <button class="btn-ghost">Dela</button>
+        </div>
+        <div style="background:#F0FAF4;border:2px solid #D0E8D8;border-radius:20px;padding:16px 18px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#8AB898;margin-bottom:12px;">Transport till Sverige</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">
+            <div><span style="color:#8AB898;font-size:11px;font-weight:500;">Nästa transport</span><br><strong style="color:#1B3A28;">April 2026</strong></div>
+            <div><span style="color:#8AB898;font-size:11px;font-weight:500;">Transporttyp</span><br><strong style="color:#1B3A28;">Bil via Europa</strong></div>
+            <div><span style="color:#8AB898;font-size:11px;font-weight:500;">Kostnad</span><br><strong style="color:#1B3A28;">2 500–4 000 kr</strong></div>
+            <div><span style="color:#8AB898;font-size:11px;font-weight:500;">Platser kvar</span><br><strong style="color:#FF6B45;">3 av 6</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#8AB898;margin-bottom:16px;">Om organisationen</div>
+
+    <div class="org-section">
+      <div class="org-header">
+        <div class="org-logo ph">Logo</div>
+        <div class="org-meta">
+          <div class="org-title">Organisationsnamn</div>
+          <div class="org-subtitle">Ideell organisation · Rumänien · Grundad 2014</div>
+          <div class="org-stats-row">
+            <div class="org-stat"><div class="v">234</div><div class="l">Adopterade</div></div>
+            <div class="org-stat"><div class="v">18</div><div class="l">Aktuella hundar</div></div>
+            <div class="org-stat"><div class="v">12</div><div class="l">Fosterhem</div></div>
+            <div class="org-stat"><div class="v" style="color:#2E7D52;">✓</div><div class="l">Verifierad</div></div>
+          </div>
+        </div>
+        <div class="org-rating-big"><div class="rating-num">4.7</div><div class="rating-stars">★★★★★</div><div class="rating-count">63 omdömen</div></div>
+      </div>
+      <div class="org-desc">Beskrivning av organisationen. Vad de gör, hur länge de har arbetat med hundräddning och vilket stöd adoptanter kan förvänta sig.</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:12px;">Fler hundar från denna organisation</div>
+      <div class="org-dogs-row">
+        <div class="org-mini-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])"><div class="org-mini-img ph">Hund</div><div class="org-mini-name">Hundnamn</div><div class="org-mini-breed">Blandras, 3 år</div></div>
+        <div class="org-mini-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])"><div class="org-mini-img ph">Hund</div><div class="org-mini-name">Hundnamn</div><div class="org-mini-breed">Blandras, 1 år</div></div>
+        <div class="org-mini-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])"><div class="org-mini-img ph">Hund</div><div class="org-mini-name">Hundnamn</div><div class="org-mini-breed">Blandras, 5 år</div></div>
+        <div class="org-mini-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])"><div class="org-mini-img ph">Hund</div><div class="org-mini-name">Hundnamn</div><div class="org-mini-breed">Blandras, 2 år</div></div>
+        <div class="org-mini-card" onclick="go('detail',document.querySelectorAll('.pw button')[1])"><div class="org-mini-img ph">Hund</div><div class="org-mini-name">Hundnamn</div><div class="org-mini-breed">Blandras, 4 år</div></div>
+      </div>
+    </div>
+
+    <div class="reviews-section">
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:22px;color:#1B3A28;">Omdömen om organisationen</div>
+      <div class="review-summary">
+        <div><div class="review-big-num">4.7</div><div class="review-big-stars">★★★★★</div><div class="review-big-count">63 omdömen</div></div>
+        <div class="bar-rows">
+          <div class="bar-row"><span class="stars">5</span><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><span class="bar-count">45</span></div>
+          <div class="bar-row"><span class="stars">4</span><div class="bar-track"><div class="bar-fill" style="width:19%"></div></div><span class="bar-count">12</span></div>
+          <div class="bar-row"><span class="stars">3</span><div class="bar-track"><div class="bar-fill" style="width:6%"></div></div><span class="bar-count">4</span></div>
+          <div class="bar-row"><span class="stars">2</span><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div><span class="bar-count">2</span></div>
+          <div class="bar-row"><span class="stars">1</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-count">0</span></div>
+        </div>
+      </div>
+      <div class="review-item"><div class="review-top"><div class="review-av ph">Av</div><div class="review-author"><div class="review-name">Förnamn E.</div><div class="review-date">Mars 2026</div></div><div class="review-stars">★★★★★</div></div><div class="review-text">Bra omdömestext. Erfarenhet av adoptionsprocessen och hur transporten fungerade. Rekommenderar varmt.</div></div>
+      <div class="review-item"><div class="review-top"><div class="review-av ph">Av</div><div class="review-author"><div class="review-name">Förnamn L.</div><div class="review-date">Februari 2026</div></div><div class="review-stars">★★★★☆</div></div><div class="review-text">Positivt helhetsintryck med ett litet förbättringsförslag om kommunikation.</div></div>
+      <div class="review-item"><div class="review-top"><div class="review-av ph">Av</div><div class="review-author"><div class="review-name">Förnamn K.</div><div class="review-date">Januari 2026</div></div><div class="review-stars">★★★★★</div></div><div class="review-text">Organisationens engagemang var imponerande och hunden stämde med beskrivningen.</div></div>
+      <div style="margin-top:18px;"><button class="btn-ghost btn-sm">Visa alla 63 omdömen</button><button class="btn btn-sm" style="margin-left:8px;">Skriv omdöme</button></div>
+    </div>
+  </div>
+
+  <div style="background:#E8F5EE;border-top:2px solid #D0E8D8;margin-top:52px;">
+    <div class="ft"><div class="ft-cols"><div class="ft-col"><h4>Om Tasshem</h4><a href="#">Om oss</a><a href="#">Hur det fungerar</a><a href="#">Kontakt</a></div><div class="ft-col"><h4>För adoptanter</h4><a href="#">Hitta hund</a><a href="#">Adoptionsguide</a><a href="#">Vanliga frågor</a></div><div class="ft-col"><h4>Organisationer</h4><a href="#">Alla organisationer</a><a href="#">Bli samarbetspart</a></div><div class="ft-col"><h4>Volontärer</h4><a href="#">Bli transportvolontär</a><a href="#">Bli fosterhem</a></div></div><div class="ft-bottom">© 2026 Tasshem. Alla rättigheter förbehållna.</div></div>
+  </div>
+</div>
+
+<!-- ===================== PAGE 3: FUNDING ===================== -->
+<div id="p-funding" class="pg">
+  <div class="nav">
+    <div class="logo" onclick="go('listing')">Tasshem<span class="logo-dot">.</span></div>
+    <div class="search-box"><span style="color:#8AB898;font-size:15px;">⌕</span><input type="text" placeholder="Sök insamling, hund, ändamål..."></div>
+    <div class="nav-right"><a class="nav-link" href="#">Om oss</a><a class="nav-link" href="#">Organisationer</a><button class="btn btn-sm" style="margin-left:4px;">Logga in</button></div>
+  </div>
+  <div class="back-bar"><button class="back-btn" onclick="go('listing')">← Tillbaka</button></div>
+  <div class="content">
+    <div style="font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:8px;color:#1B3A28;">Insamlingar just nu</div>
+    <div style="font-size:14px;color:#6B9A7A;margin-bottom:32px;font-weight:500;">Bidra till hundar som behöver extra hjälp med vård, transport eller rehabilitering.</div>
+    <div class="grid g3">
+      <div class="fund-card" onclick="go('campaign',null)"><div class="ph" style="height:180px;border-radius:0;">Hundporträtt</div><div style="padding:16px 18px 18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Veterinärvård</div><div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:6px;color:#1B3A28;">Hundnamn</div><div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Beskrivning av insamlingens syfte och vad pengarna används till.</div><div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;">3 240 kr</strong> insamlade</span><span>av 5 000 kr</span></div><div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:65%;background:#2E7D52;border-radius:4px;"></div></div></div><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:500;"><span style="color:#8AB898;">47 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">12 dagar kvar</span></div></div></div>
+      <div class="fund-card" onclick="go('campaign',null)"><div class="ph" style="height:180px;border-radius:0;">Hundporträtt</div><div style="padding:16px 18px 18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Rehabilitering</div><div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:6px;color:#1B3A28;">Hundnamn</div><div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Beskrivning av insamlingens syfte och vad pengarna används till.</div><div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;">7 600 kr</strong> insamlade</span><span>av 8 000 kr</span></div><div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:95%;background:#2E7D52;border-radius:4px;"></div></div></div><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:500;"><span style="color:#8AB898;">103 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">2 dagar kvar</span></div></div></div>
+      <div class="fund-card" onclick="go('campaign',null)"><div class="ph" style="height:180px;border-radius:0;">Hundporträtt</div><div style="padding:16px 18px 18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:8px;">Transport</div><div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:6px;color:#1B3A28;">Hundnamn</div><div style="font-size:12px;color:#6B9A7A;line-height:1.6;margin-bottom:14px;font-weight:500;">Beskrivning av insamlingens syfte och vad pengarna används till.</div><div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#8AB898;margin-bottom:6px;font-weight:500;"><span><strong style="color:#1B3A28;">1 800 kr</strong> insamlade</span><span>av 3 000 kr</span></div><div style="height:8px;background:#E8F5EE;border-radius:4px;overflow:hidden;"><div style="height:100%;width:60%;background:#2E7D52;border-radius:4px;"></div></div></div><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:500;"><span style="color:#8AB898;">29 bidragsgivare</span><span style="color:#FF6B45;font-weight:700;">5 dagar kvar</span></div></div></div>
+    </div>
+    <div class="load-more-row"><button class="btn-ghost">Ladda fler insamlingar</button></div>
+  </div>
+  <div style="background:#E8F5EE;border-top:2px solid #D0E8D8;margin-top:52px;"><div class="ft"><div class="ft-cols"><div class="ft-col"><h4>Om Tasshem</h4><a href="#">Om oss</a><a href="#">Kontakt</a></div><div class="ft-col"><h4>För adoptanter</h4><a href="#">Hitta hund</a><a href="#">Insamlingar</a></div><div class="ft-col"><h4>Organisationer</h4><a href="#">Alla organisationer</a></div><div class="ft-col"><h4>Volontärer</h4><a href="#">Bli fosterhem</a></div></div><div class="ft-bottom">© 2026 Tasshem. Alla rättigheter förbehållna.</div></div></div>
+</div>
+
+<!-- ===================== PAGE 4: CAMPAIGN ===================== -->
+<div id="p-campaign" class="pg">
+  <div class="nav">
+    <div class="logo" onclick="go('listing')">Tasshem<span class="logo-dot">.</span></div>
+    <div class="search-box"><span style="color:#8AB898;font-size:15px;">⌕</span><input type="text" placeholder="Sök..."></div>
+    <div class="nav-right"><a class="nav-link" href="#">Om oss</a><button class="btn btn-sm" style="margin-left:4px;">Logga in</button></div>
+  </div>
+  <div class="back-bar"><button class="back-btn" onclick="go('funding')">← Tillbaka</button></div>
+  <div class="content" style="max-width:1000px;">
+    <div class="breadcrumbs"><a onclick="go('funding',null)">Insamlingar</a><span>›</span><strong>Hundnamn</strong></div>
+    <div style="display:grid;grid-template-columns:1fr 340px;gap:32px;align-items:start;">
+      <div>
+        <div class="ph" style="height:380px;border-radius:24px;margin-bottom:20px;">Huvudbild — 640×380</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px;">
+          <div class="ph" style="height:72px;border-radius:14px;font-size:8px;">Bild 2</div>
+          <div class="ph" style="height:72px;border-radius:14px;font-size:8px;">Bild 3</div>
+          <div class="ph" style="height:72px;border-radius:14px;font-size:8px;">Bild 4</div>
+          <div class="ph" style="height:72px;border-radius:14px;font-size:8px;position:relative;"><div style="position:absolute;inset:0;background:rgba(27,58,40,.45);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;">+6</div></div>
+        </div>
+        <div style="display:flex;border-bottom:2px solid #E8F5EE;margin-bottom:24px;">
+          <div style="padding:10px 20px;font-size:13px;font-weight:700;color:#1B3A28;border-bottom:3px solid #FF6B45;cursor:pointer;">Berättelse</div>
+          <div style="padding:10px 20px;font-size:13px;font-weight:600;color:#8AB898;cursor:pointer;">Uppdateringar <span style="background:#FF6B45;color:#fff;font-size:10px;padding:1px 7px;border-radius:20px;margin-left:4px;">3</span></div>
+          <div style="padding:10px 20px;font-size:13px;font-weight:600;color:#8AB898;cursor:pointer;">Kommentarer <span style="font-size:11px;color:#C8E8D4;">14</span></div>
+        </div>
+        <div style="margin-bottom:32px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#8AB898;margin-bottom:14px;">Om Hundnamn</div>
+          <div style="display:flex;gap:16px;background:#F0FAF4;border:2px solid #E0F0E8;border-radius:20px;padding:16px;margin-bottom:20px;">
+            <div class="ph" style="width:80px;height:80px;border-radius:14px;flex-shrink:0;font-size:8px;">Bild</div>
+            <div><div style="font-family:'DM Serif Display',serif;font-size:17px;margin-bottom:2px;color:#1B3A28;">Hundnamn</div><div style="font-size:12px;color:#8AB898;margin-bottom:8px;font-weight:500;">Blandras · 3 år · Hona · Rumänien</div><div style="display:flex;gap:6px;flex-wrap:wrap;"><span class="trait">Kastrerad</span><span class="trait">Vaccinerad</span><span class="trait">Chipmärkt</span><span class="trait">EU-pass</span></div></div>
+            <div style="margin-left:auto;"><a onclick="go('detail',document.querySelectorAll('.pw button')[1])" style="font-size:12px;font-weight:700;color:#FF6B45;cursor:pointer;">Visa hundprofil →</a></div>
+          </div>
+          <div style="font-size:13px;color:#5A7A68;line-height:1.85;margin-bottom:16px;font-weight:500;">Bakgrundsbeskrivning av hunden och dess situation. Varför insamlingen startades och varför hjälp behövs just nu.</div>
+          <div style="font-size:13px;color:#5A7A68;line-height:1.85;margin-bottom:16px;font-weight:500;">Ytterligare detaljer om hundens hälsostatus och vad nästa steg är om målet nås.</div>
+          <div style="background:#fff;border:2px solid #E8F5EE;border-radius:20px;padding:18px;margin-bottom:20px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:14px;">Hur pengarna används</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#1B3A28;font-weight:500;"><span>Veterinärvård &amp; operation</span><strong>3 000 kr</strong></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#1B3A28;font-weight:500;"><span>Mediciner &amp; uppföljning</span><strong>1 000 kr</strong></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:#1B3A28;font-weight:500;"><span>Transport till Sverige</span><strong>2 500 kr</strong></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;border-top:2px solid #E8F5EE;padding-top:8px;"><span style="font-weight:700;color:#1B3A28;">Totalt mål</span><strong style="color:#2E7D52;">6 500 kr</strong></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom:32px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#8AB898;margin-bottom:16px;">Senaste uppdateringar</div>
+          <div style="border-left:3px solid #D0E8D8;padding-left:20px;display:flex;flex-direction:column;gap:20px;">
+            <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:11px;height:11px;background:#2E7D52;border-radius:50%;margin-left:-25px;flex-shrink:0;border:2px solid #fff;box-shadow:0 0 0 2px #2E7D52;"></div><span style="font-size:11px;font-weight:700;color:#1B3A28;">Uppdatering 3</span><span style="font-size:11px;color:#C8E8D4;font-weight:500;">10 mars 2026</span></div><div style="font-size:13px;color:#5A7A68;line-height:1.65;font-weight:500;">Operation genomförd — hur det gick och nästa steg.</div></div>
+            <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:11px;height:11px;background:#D0E8D8;border-radius:50%;margin-left:-25px;flex-shrink:0;"></div><span style="font-size:11px;font-weight:700;color:#6B9A7A;">Uppdatering 2</span><span style="font-size:11px;color:#C8E8D4;font-weight:500;">2 mars 2026</span></div><div style="font-size:13px;color:#8AB898;line-height:1.65;font-weight:500;">Veterinärbesöket avklarat och transporten bokad.</div></div>
+            <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:11px;height:11px;background:#D0E8D8;border-radius:50%;margin-left:-25px;flex-shrink:0;"></div><span style="font-size:11px;font-weight:700;color:#6B9A7A;">Insamlingen startad</span><span style="font-size:11px;color:#C8E8D4;font-weight:500;">20 februari 2026</span></div><div style="font-size:13px;color:#8AB898;line-height:1.65;font-weight:500;">Insamlingen är nu igång. Tack för ert stöd!</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#8AB898;margin-bottom:16px;">Kommentarer (14)</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:10px;"><div class="ph" style="width:32px;height:32px;border-radius:50%;flex-shrink:0;font-size:7px;">Av</div><div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:16px;padding:10px 14px;flex:1;"><div style="font-size:12px;font-weight:700;margin-bottom:2px;color:#1B3A28;">Förnamn E. <span style="color:#C8E8D4;font-weight:500;font-size:11px;">· 8 mars</span></div><div style="font-size:12px;color:#5A7A68;line-height:1.5;font-weight:500;">Uppmuntrande ord till organisationen.</div></div></div>
+            <div style="display:flex;gap:10px;"><div class="ph" style="width:32px;height:32px;border-radius:50%;flex-shrink:0;font-size:7px;">Av</div><div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:16px;padding:10px 14px;flex:1;"><div style="font-size:12px;font-weight:700;margin-bottom:2px;color:#1B3A28;">Förnamn L. <span style="color:#C8E8D4;font-weight:500;font-size:11px;">· 5 mars</span></div><div style="font-size:12px;color:#5A7A68;line-height:1.5;font-weight:500;">Stöttande meddelande.</div></div></div>
+          </div>
+          <button class="btn-ghost btn-sm" style="margin-top:16px;">Visa alla 14 kommentarer</button>
+        </div>
+      </div>
+
+      <div style="position:sticky;top:92px;display:flex;flex-direction:column;gap:16px;">
+        <div style="background:#fff;border:2px solid #D0E8D8;border-radius:24px;padding:24px;box-shadow:0 8px 32px rgba(46,125,82,.08);">
+          <div style="font-family:'DM Serif Display',serif;font-size:32px;color:#1B3A28;margin-bottom:2px;">4 875 kr</div>
+          <div style="font-size:13px;color:#8AB898;margin-bottom:16px;font-weight:500;">insamlade av <strong style="color:#1B3A28;">6 500 kr</strong></div>
+          <div style="height:10px;background:#E8F5EE;border-radius:5px;overflow:hidden;margin-bottom:16px;"><div style="height:100%;width:75%;background:#2E7D52;border-radius:5px;"></div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;text-align:center;">
+            <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:14px;padding:8px;"><div style="font-size:16px;font-weight:800;color:#2E7D52;">75%</div><div style="font-size:10px;color:#8AB898;font-weight:600;">Finansierat</div></div>
+            <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:14px;padding:8px;"><div style="font-size:16px;font-weight:800;color:#1B3A28;">63</div><div style="font-size:10px;color:#8AB898;font-weight:600;">Bidragsgivare</div></div>
+            <div style="background:#F0FAF4;border:2px solid #E0F0E8;border-radius:14px;padding:8px;"><div style="font-size:16px;font-weight:800;color:#1B3A28;">12</div><div style="font-size:10px;color:#8AB898;font-weight:600;">Dagar kvar</div></div>
+          </div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:11px;font-weight:700;color:#8AB898;margin-bottom:8px;">Välj belopp (kr)</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">
+              <button class="filter-btn on" style="height:38px;">50</button>
+              <button class="filter-btn" style="height:38px;">100</button>
+              <button class="filter-btn" style="height:38px;">250</button>
+              <button class="filter-btn" style="height:38px;">500</button>
+              <button class="filter-btn" style="height:38px;">1 000</button>
+              <button class="filter-btn" style="height:38px;">Valfritt</button>
+            </div>
+          </div>
+          <button class="btn" style="width:100%;padding:14px;font-size:14px;">Bidra nu</button>
+          <div style="text-align:center;font-size:11px;color:#A0C8B0;margin-top:10px;font-weight:500;">Swish · Kort · Bankgiro</div>
+        </div>
+        <div style="background:#fff;border:2px solid #E8F5EE;border-radius:20px;padding:18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:12px;">Sprid ordet</div><div style="display:flex;gap:8px;"><button class="btn-ghost btn-sm" style="flex:1;">Dela</button><button class="btn-ghost btn-sm" style="flex:1;">Kopiera länk</button></div></div>
+        <div style="background:#fff;border:2px solid #E8F5EE;border-radius:20px;padding:18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:12px;">Ansvarig organisation</div><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><div class="ph" style="width:40px;height:40px;border-radius:12px;font-size:8px;flex-shrink:0;">Logo</div><div><div style="font-size:13px;font-weight:700;color:#1B3A28;">Organisationsnamn</div><div style="font-size:11px;color:#8AB898;font-weight:500;">★ 4.7 · Rumänien · <span style="color:#2E7D52;font-weight:700;">Verifierad</span></div></div></div><button class="btn-ghost btn-sm" style="width:100%;">Visa organisation</button></div>
+        <div style="background:#fff;border:2px solid #E8F5EE;border-radius:20px;padding:18px;"><div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8AB898;margin-bottom:12px;">Senaste bidrag</div><div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;align-items:center;gap:8px;"><div class="ph" style="width:28px;height:28px;border-radius:50%;font-size:7px;flex-shrink:0;">Av</div><div style="flex:1;font-size:12px;color:#1B3A28;font-weight:500;">Förnamn E.</div><div style="font-size:12px;font-weight:700;color:#2E7D52;">250 kr</div></div><div style="display:flex;align-items:center;gap:8px;"><div class="ph" style="width:28px;height:28px;border-radius:50%;font-size:7px;flex-shrink:0;">Av</div><div style="flex:1;font-size:12px;color:#1B3A28;font-weight:500;">Anonym</div><div style="font-size:12px;font-weight:700;color:#2E7D52;">100 kr</div></div><div style="display:flex;align-items:center;gap:8px;"><div class="ph" style="width:28px;height:28px;border-radius:50%;font-size:7px;flex-shrink:0;">Av</div><div style="flex:1;font-size:12px;color:#1B3A28;font-weight:500;">Förnamn K.</div><div style="font-size:12px;font-weight:700;color:#2E7D52;">500 kr</div></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#E8F5EE;border-top:2px solid #D0E8D8;margin-top:52px;"><div class="ft"><div class="ft-cols"><div class="ft-col"><h4>Om Tasshem</h4><a href="#">Om oss</a><a href="#">Kontakt</a></div><div class="ft-col"><h4>För adoptanter</h4><a href="#">Hitta hund</a><a href="#">Insamlingar</a></div><div class="ft-col"><h4>Organisationer</h4><a href="#">Alla organisationer</a></div><div class="ft-col"><h4>Volontärer</h4><a href="#">Bli fosterhem</a></div></div><div class="ft-bottom">© 2026 Tasshem. Alla rättigheter förbehållna.</div></div></div>
+</div>
+
+<script>
+function go(page, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById('p-'+page).classList.add('on');
+  if (btn) { document.querySelectorAll('.pw button').forEach(b => b.classList.remove('on')); btn.classList.add('on'); }
+  window.scrollTo(0,0);
+}
+function openModal(title, text, imgLabel) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-text').textContent = text;
+  document.getElementById('modal-img').textContent = imgLabel;
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('visible');
+}
+</script>
+</body>
+</html>
