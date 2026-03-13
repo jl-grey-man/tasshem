@@ -57,6 +57,9 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
 
 /* Filter bar */
 .filterbar { background:#fff; border-bottom:1.5px solid #e0e0e0; padding:0 32px; display:flex; align-items:center; gap:10px; height:50px; overflow-x:auto; }
+.back-bar { background:#fff; border-bottom:1.5px solid #e0e0e0; padding:0 32px; display:flex; align-items:center; height:44px; }
+.back-btn { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#888; background:none; border:none; cursor:pointer; font-family:'Inter',sans-serif; padding:0; transition:.15s; }
+.back-btn:hover { color:#111; }
 .filterbar::-webkit-scrollbar { display:none; }
 .filter-label { font-size:11px; font-weight:700; color:#aaa; letter-spacing:.5px; text-transform:uppercase; white-space:nowrap; margin-right:4px; }
 .filter-btn { height:30px; padding:0 14px; border-radius:20px; border:1.5px solid #e0e0e0; background:#fff; font:500 12px/1 'Inter',sans-serif; color:#888; cursor:pointer; white-space:nowrap; transition:.15s; }
@@ -232,7 +235,7 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
 <div id="p-listing" class="pg on">
 
   <div class="nav">
-    <div class="logo">Tass<span>hem</span></div>
+    <div class="logo" onclick="go('listing')" style="cursor:pointer;">Tass<span>hem</span></div>
     <div class="search-box">
       <span style="color:#bbb;font-size:14px;">⌕</span>
       <input type="text" placeholder="Sök ras, namn, land...">
@@ -605,7 +608,7 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
 <div id="p-detail" class="pg">
 
   <div class="nav">
-    <div class="logo">Tass<span>hem</span></div>
+    <div class="logo" onclick="go('listing')" style="cursor:pointer;">Tass<span>hem</span></div>
     <div class="search-box">
       <span style="color:#bbb;font-size:14px;">⌕</span>
       <input type="text" placeholder="Sök ras, namn, land...">
@@ -616,6 +619,10 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
       <a class="nav-link" href="#">Bli volontär</a>
       <button class="btn btn-sm" style="margin-left:4px;">Logga in</button>
     </div>
+  </div>
+
+  <div class="back-bar">
+    <button class="back-btn" onclick="go('listing')">← Tillbaka</button>
   </div>
 
   <div class="content">
@@ -928,7 +935,7 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
 <div id="p-campaign" class="pg">
 
   <div class="nav">
-    <div class="logo">Tass<span>hem</span></div>
+    <div class="logo" onclick="go('listing')" style="cursor:pointer;">Tass<span>hem</span></div>
     <div class="search-box">
       <span style="color:#bbb;font-size:14px;">⌕</span>
       <input type="text" placeholder="Sök...">
@@ -938,6 +945,10 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
       <a class="nav-link" href="#">Organisationer</a>
       <button class="btn btn-sm" style="margin-left:4px;">Logga in</button>
     </div>
+  </div>
+
+  <div class="back-bar">
+    <button class="back-btn" onclick="go('listing')">← Tillbaka</button>
   </div>
 
   <div class="content" style="max-width:1000px;">
@@ -1195,7 +1206,7 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
 <div id="p-funding" class="pg">
 
   <div class="nav">
-    <div class="logo">Tass<span>hem</span></div>
+    <div class="logo" onclick="go('listing')" style="cursor:pointer;">Tass<span>hem</span></div>
     <div class="search-box">
       <span style="color:#bbb;font-size:14px;">⌕</span>
       <input type="text" placeholder="Sök insamling, hund, ändamål...">
@@ -1206,6 +1217,10 @@ body { font-family:'Inter',sans-serif; background:#f2f2f2; color:#111; font-size
       <a class="nav-link" href="#">Bli volontär</a>
       <button class="btn btn-sm" style="margin-left:4px;">Logga in</button>
     </div>
+  </div>
+
+  <div class="back-bar">
+    <button class="back-btn" onclick="go('listing')">← Tillbaka</button>
   </div>
 
   <div class="content">
